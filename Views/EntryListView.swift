@@ -5,7 +5,6 @@
 //  Created by Jay Chestnut on 3/10/26.
 //
 
-
 import SwiftUI
 import SwiftData
 
@@ -16,6 +15,9 @@ struct EntryListView: View {
     @State private var searchText: String = ""
     @State private var showFavoritesOnly: Bool = false
     @State private var sortNewestFirst: Bool = true
+
+    @State private var showingForm: Bool = false
+    @State private var formEntry: JournalEntry? = nil
 
     private var filteredEntries: [JournalEntry] {
         var result = showFavoritesOnly ? entries.filter { $0.isFavorite } : entries
@@ -50,6 +52,18 @@ struct EntryListView: View {
                     } label: {
                         EntryRowView(entry: entry)
                     }
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        Button("Edit") {
+                            formEntry = entry
+                            showingForm = true
+                        }
+                        .tint(.blue)
+                        Button(role: .destructive) {
+                            context.delete(entry)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
                 }
                 .onDelete(perform: deleteRows)
             }
@@ -62,8 +76,9 @@ struct EntryListView: View {
             }
 
             ToolbarItem(placement: .topBarTrailing) {
-                NavigationLink {
-                    EntryFormView(entry: nil) // Create
+                Button {
+                    formEntry = nil
+                    showingForm = true
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -82,6 +97,19 @@ struct EntryListView: View {
                 } label: {
                     Image(systemName: "line.3.horizontal.decrease.circle")
                 }
+            }
+            
+            ToolbarItem(placement: .topBarLeading) {
+                NavigationLink {
+                    ContentView()
+                } label: {
+                    Label("Home", systemImage: "house")
+                }
+            }
+        }
+        .sheet(isPresented: $showingForm) {
+            NavigationStack {
+                EntryFormView(entry: formEntry)
             }
         }
     }
@@ -117,7 +145,7 @@ private struct EntryRowView: View {
 
             Spacer()
 
-      
+
         }
         .padding(.vertical, 4)
     }

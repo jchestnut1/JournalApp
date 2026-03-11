@@ -9,13 +9,31 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    Spacer()
+                    Text("New Entry")
+                        .font(.title2)
+                        .bold()
+                    Spacer()
+                }
+
+                EntryFormView(entry: nil)
+
+                Spacer()
+
+                NavigationLink {
+                    EntryListView()
+                } label: {
+                    Label("View All Entries", systemImage: "list.bullet")
+                }
+                .buttonStyle(.borderedProminent)
+                .padding(.top, 8)
+            }
+            .padding()
+            .navigationTitle("Home")
         }
-        .padding()
     }
 }
 

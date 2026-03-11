@@ -18,6 +18,7 @@ struct EntryFormView: View {
     @State private var title: String = ""
     @State private var entryBody: String = ""
     @State private var isFavorite: Bool = false
+    @State private var createdAt: Date = Date()
 
     var body: some View {
         Form {
@@ -28,6 +29,10 @@ struct EntryFormView: View {
             Section("Body") {
                 TextEditor(text: $entryBody)
                     .frame(minHeight: 180)
+            }
+            
+            Section("Date") {
+                DatePicker("Created At", selection: $createdAt, displayedComponents: [.date, .hourAndMinute])
             }
 
             Section {
@@ -49,6 +54,7 @@ struct EntryFormView: View {
             title = entry.title
             entryBody = entry.body
             isFavorite = entry.isFavorite
+            createdAt = entry.createdAt
         }
     }
 
@@ -61,14 +67,19 @@ struct EntryFormView: View {
             entry.title = t
             entry.body = b
             entry.isFavorite = isFavorite
+            entry.createdAt = createdAt
         } else {
-            context.insert(JournalEntry(title: t, body: b, isFavorite: isFavorite))
+            let newEntry: JournalEntry = JournalEntry(title: t, body: b, createdAt: createdAt, isFavorite: isFavorite)
+            context.insert(newEntry)
+            
+            // Reset form for next entry when embedded (or keep consistent behavior)
+            self.title = ""
+            self.entryBody = ""
+            self.isFavorite = false
+            self.createdAt = Date()
         }
 
         dismiss()
     }
 }
 
-#Preview {
-    EntryFormView(entry: nil)
-}
