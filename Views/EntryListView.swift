@@ -85,6 +85,14 @@ struct EntryListView: View {
             }
 
             ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink {
+                    SettingsView()
+                } label: {
+                    Image(systemName: "gearshape")
+                }
+            }
+
+            ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     Toggle("Favorites only", isOn: $showFavoritesOnly)
 
@@ -96,14 +104,6 @@ struct EntryListView: View {
                     }
                 } label: {
                     Image(systemName: "line.3.horizontal.decrease.circle")
-                }
-            }
-            
-            ToolbarItem(placement: .topBarLeading) {
-                NavigationLink {
-                    ContentView()
-                } label: {
-                    Label("Home", systemImage: "house")
                 }
             }
         }
